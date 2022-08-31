@@ -2,10 +2,4 @@
 
 
 def search_replace(my_list, search, replace):
-    new = []
-    for i in my_list:
-        if i == search:
-            new.append(replace)
-        else:
-            new.append(i)
-        return (new)
+    return [replace if search == n else n for n in my_list]
