@@ -26,5 +26,5 @@ def roman_to_int(roman_string):
             number += roman_dict[roman_string[i]] * -1
 
         else:
-            numer += roman_dict[roman_string[i]]
+            number += roman_dict[roman_string[i]]
     return (number)
