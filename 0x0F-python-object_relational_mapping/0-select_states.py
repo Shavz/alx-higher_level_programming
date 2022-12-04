@@ -1,23 +1,20 @@
 #!/usr/bin/python3
+"""Script lists all states from database hbtn_0e_0_usa
+Takes three arguments:
+    mysql username
+    mysql password
+    database name
+Connects to default host (localhost) and port (3306)
 """
-    Get all states of a data base
-"""
-import MySQLdb
-from sys import argv
-
-
-def main():
-    """Only executes when is not imported"""
-    db = MySQLdb.connect(host="localhost",
-                         user=argv[1],
-                         port=3306,
-                         passwd=argv[2],
-                         db=argv[3])
-    c = db.cursor()
-    numrows = c.execute("""SELECT * FROM states ORDER BY states.id ASC""")
-    states = c.fetchall()
-    for idstate in states:
-        print(idstate)
 
 if __name__ == "__main__":
-    main()
+    from sys import argv
+    import MySQLdb
+    db = MySQLdb.connect(user=argv[1], passwd=argv[2], db=argv[3])
+    c = db.cursor()
+    c.execute("""SELECT * FROM states ORDER BY states.id ASC""")
+    rows = c.fetchall()
+    for row in rows:
+        print(row)
+    c.close()
+    db.close()
