@@ -1,24 +1,36 @@
 #!/usr/bin/python3
-"""Script prints all City objects
-Takes three arguments
-    mysql username
-    mysql password
-    database name
-Connects to host localhost and default port (3306)
-"""
-if __name__ == "__main__":
-    from sqlalchemy import (create_engine)
-    from sqlalchemy.orm import aliased, sessionmaker
-    from model_state import Base, State
-    from model_city import City
-    from sys import argv
-    Session = sessionmaker()
-    engine = create_engine('mysql+mysqldb://{}:{}@localhost/{}'.format(
-        argv[1], argv[2], argv[3]), pool_pre_ping=True)
-    session = Session(bind=engine)
-    Base.metadata.create_all(engine)
-    result = (session.query(State.name, City.id, City.name).filter(
-        State.id == City.state_id).order_by(City.id).all())
-    for i in result:
-        print("{}: ({:d}) {}".format(i[0], i[1], i[2]))
+"""script 14-model_city_fetch_by_state.py that prints all
+City objects from the database hbtn_0e_14_usa"""
+from model_state import State, Base
+from model_city import City
+from sqlalchemy import create_engine
+from sys import argv
+from sqlalchemy.orm import sessionmaker
+
+
+def model_city():
+    """initializate function model_state for db"""
+    city_engine = create_engine('mysql+mysqldb://{}:{}@localhost/{}'.format(
+        argv[1],
+        argv[2],
+        argv[3]),
+        pool_pre_ping=True)
+
+    # associate it with our custom Session class
+    Base.metadata.create_all(city_engine)
+    city_session = sessionmaker()
+    city_session.configure(bind=city_engine)
+    session = city_session()
+
+    rows = session.query(City, State)\
+                  .filter(City.state_id == State.id)\
+                  .order_by(City.id)
+
+    for city, state in rows:
+        print('{}: ({}) {}'.format(state.name, city.id, city.name))
+
     session.close()
+
+
+if __name__ == '__main__':
+    model_city()
